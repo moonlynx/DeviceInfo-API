@@ -1,15 +1,15 @@
 module.exports = {
-    httpHost: "<http listen host>",
-    httpPort: "<http listen port>",
+    httpHost: "127.0.0.1",
+    httpPort: 3001,
 
-    dbServer: "<mongodb server address>",
-    dbPort: "<mongodb server port>",
+    dbServer: "127.0.0.1",
+    dbPort: "27017",
 
-    dbName: "<mongodb database>",
-    username: "<mongodb username>",
-    password: "<mongodb password>",
+    dbName: "dbDeviceInfo",
+    username: "readonly",
+    password: "readonly",
 
-    cDevices: "Devices collection",
+    cDevices: "Devices",
     
     authDb: "admin" //mongodb auth database
 };
