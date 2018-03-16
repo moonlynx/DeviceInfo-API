@@ -1,7 +1,7 @@
 const   http = require("http"),
         url = require("url"),
-        verifyIP = require("net").isIPv4,
         serverHelpers = require("./helpers/serverHelpers"),
+        formatError = require("./helpers/errorHelpers"),
         config = require("./config");
 
 const   SERVER = http.createServer();
@@ -11,20 +11,33 @@ function serverCB(req, res) {
         query = str.query,
         pathname = str.pathname;
 
-    if ((pathname == "/query") && ("ip" in query) && (verifyIP(query["ip"]))) {
-        
-        serverHelpers.getOIDsValues(query["ip"])
-        .then(result => {
-            res.end(JSON.stringify(result));
-        })
-        .catch(error => {
-            console.error(error);
-            res.end("ERROR");
-        });
+    switch (pathname) {
+        case "/query": 
+            serverHelpers.getQueryResponse(query)
+            .then(result => {
+                res.end(result);
+            })
+            .catch(error => {
+                console.error(formatError("/query", error));
+                res.end("ERROR");
+            });
+            break;
 
-    } else {
-        res.end("OK");
-    }    
+        case "/devices": 
+            serverHelpers.getDevicesResponse(query)
+            .then(result => {
+                res.end(result);
+            })
+            .catch(error => {
+                console.error(formatError("/devices", error));
+                res.end("ERROR");
+            });
+            break;
+
+        default:
+            res.end("OK");
+            break;
+    }
 }
 
 SERVER.on("request", serverCB);

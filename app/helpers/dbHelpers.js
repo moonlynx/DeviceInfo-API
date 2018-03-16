@@ -19,14 +19,16 @@ function getDeviceObject(ip) {
             .then(serverInstance => {
 
                 const collection = getDevicesCollection(serverInstance),
+                      query = {ip: ip},
                       projection = {_id: 0, ip: 1, oids: 1, comunity: 1};
 
-                return  getFindResult(collection, {ip: ip}, projection).toArray()
+                return  getFindResult(collection, query, projection).toArray()
                         .then(result => {
                             serverInstance.close();
                             return result;                           
                         })
                         .catch(error => {
+                            serverInstance.close();
                             throw formatError("getFindResult", error);
                         });
             })
@@ -35,4 +37,28 @@ function getDeviceObject(ip) {
             });
 }
 
+function getDevicesInfo() {
+    return  dbConnector.getServerInstance(config.username, config.password)
+            .then(serverInstance => {
+
+                const collection = getDevicesCollection(serverInstance),
+                      query = {},
+                      projection = {_id: 0};
+
+                return  getFindResult(collection, query, projection).toArray()
+                        .then(result => {
+                            serverInstance.close();
+                            return result;                           
+                        })
+                        .catch(error => {
+                            serverInstance.close();
+                            throw formatError("getFindResult", error);
+                        });
+            })
+            .catch(error => {
+                throw formatError("getDevicesInfo", error);
+            });
+}
+
 module.exports.getDeviceObject = getDeviceObject;
+module.exports.getDevicesInfo = getDevicesInfo;
